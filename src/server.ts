@@ -1,6 +1,8 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import {Readable} from "stream";
+import fs from "fs";
 
 (async () => {
 
@@ -18,7 +20,6 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // endpoint to filter an image from a public url.
   // IT SHOULD
   //    1
-  //    1. validate the image_url query
   //    2. call filterImageFromURL(image_url) to filter the image
   //    3. send the resulting file in the response
   //    4. deletes any files on the server on finish of the response
@@ -30,6 +31,22 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+  app.get( "/filteredimage", async ( req: Request, res: Response ) => {
+      console.log('req.query', req.query);
+
+      // 1. validate the image_url query
+      if (req.query && req.query.image_url) {
+
+
+      } else {
+          res.status(404).json({
+              status:'failed',
+              message: 'Not found'
+          });
+
+      }
+
+  });
   
   // Root Endpoint
   // Displays a simple message to the user
