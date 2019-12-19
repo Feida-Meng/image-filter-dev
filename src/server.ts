@@ -47,6 +47,14 @@ import fs from "fs";
           //pass readble to response
           readable.pipe(res);
 
+          readable.on('error', () => {
+              res.status(500).json({
+                  status:'failed',
+                  message: 'Opps, something is wrong'
+              });
+              console.log('readable error');
+          });
+
       } else {
           res.status(404).json({
               status:'failed',
