@@ -36,9 +36,16 @@ import fs from "fs";
 
       // 1. validate the image_url query
       if (req.query && req.query.image_url) {
+
           //    2. call filterImageFromURL(image_url) to filter the image
           const localimageUrl: string = await filterImageFromURL(req.query.image_url);
 
+          //    3. send the resulting file in the response
+          // create readable
+          const readable: Readable = fs.createReadStream(localimageUrl);
+
+          //pass readble to response
+          readable.pipe(res);
 
       } else {
           res.status(404).json({
