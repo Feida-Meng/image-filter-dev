@@ -36,6 +36,8 @@ import fs from "fs";
 
       // 1. validate the image_url query
       if (req.query && req.query.image_url) {
+          //    2. call filterImageFromURL(image_url) to filter the image
+          const localimageUrl: string = await filterImageFromURL(req.query.image_url);
 
 
       } else {
