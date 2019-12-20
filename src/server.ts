@@ -26,8 +26,8 @@ import fs from "fs";
        the reviewer used for the test is not accessible. It can be approved by pasting this url to webbrowser,
        it will returns 403, login is required.
 
-       For future reviewer, please test this endpoint with an vliad image url, please test your image url first from a webbroswer,
-       if the image couldnt be open from an webbrowser, you should expect this api to process it.
+       For future reviewer, please test this endpoint with an valid image url, please test your image url first from a webbroswer,
+       if the image couldnt be open from an webbrowser, you should NOT expect this api to process it.
    */
 
     //! END @TODO1
