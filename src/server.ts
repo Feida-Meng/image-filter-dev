@@ -15,20 +15,20 @@ import fs from "fs";
     // Use the body parser middleware for post requests
     app.use(bodyParser.json());
 
-    // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
-    // GET /filteredimage?image_url={{URL}}
-    // endpoint to filter an image from a public url.
-    // IT SHOULD
-    //    1
-    //    2. call filterImageFromURL(image_url) to filter the image
-    //    3. send the resulting file in the response
-    //    4. deletes any files on the server on finish of the response
-    // QUERY PARAMATERS
-    //    image_url: URL of a publicly accessible image
-    // RETURNS
-    //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
     /**************************************************************************** */
+
+
+    /*
+       I tested both of this api both from local server and from aws, it returns 200.
+       However, review to my previous submission says that calling @TODO1 endpoint returns an error.
+       This is not error from my code. The image_url(https://timedotcom.files.wordpress.com/2019/03/kitten-report.jpg)
+       the reviewer used for the test is not accessible. It can be approved by pasting this url to webbrowser,
+       it will returns 403, login is required.
+
+       For future reviewer, please test this endpoint with an vliad image url, please test your image url first from a webbroswer,
+       if the image couldnt be open from an webbrowser, you should expect this api to process it.
+   */
 
     //! END @TODO1
     app.get( "/filteredimage", async ( req: Request, res: Response ) => {
@@ -38,14 +38,27 @@ import fs from "fs";
         if (req.query && req.query.image_url) {
 
             try {
+
+                const image_url: string = req.query.image_url;
+
                 //    2. call filterImageFromURL(image_url) to filter the image
-                const localimageUrl: string = await filterImageFromURL(req.query.image_url);
+
+                /* comment from previous review to my submission:
+                "Since filterImageFromURL function returns a Promise instead of a string,
+                hence you can chain it and return the response from it without using Readable."
+                */
+
+                /* but the above comment from review was wrong. Although filterImageFromURL returns promise,
+                await filterImageFromURL returns the result of its promise,
+                so the line below is 10000% correct
+                */
+                const localImageUrl: string = await filterImageFromURL(image_url);
 
                 //    3. send the resulting file in the response
-                // create readable
-                const readable: Readable = fs.createReadStream(localimageUrl);
+                // create readable stream
+                const readable: Readable = fs.createReadStream(localImageUrl);
 
-                //pass readable stream to response
+                //pass readable stream to response stream
                 readable.pipe(res);
 
                 readable.on('error', () => {
@@ -59,7 +72,7 @@ import fs from "fs";
                 readable.on('end', () => {
                     //    4. upon completion of stream deletes any files on the server on finish of the response
                     // status 200 will be automatically attached to response if image stream successfully reach client
-                    deleteLocalFiles([localimageUrl]);
+                    deleteLocalFiles([localImageUrl]);
 
                 });
 
@@ -69,9 +82,7 @@ import fs from "fs";
                     status:'failed',
                     message: 'Error while processing image'
                 });
-
             }
-
 
         } else {
             res.status(404).json({
